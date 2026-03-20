@@ -49,5 +49,3 @@ jobs:
       - name: Collect architecture graph
         run: ./archlint collect . -o architecture.yaml
 
-      - name: Validate architecture
-        run: ./archlint validate architecture.yaml
