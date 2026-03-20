@@ -24,6 +24,10 @@ tests/output/
 *.yml
 *.puml
 
+# Do not ignore GitHub Actions workflows
+!.github/
+!.github/**
+
 # IDE
 .idea/
 .vscode/
