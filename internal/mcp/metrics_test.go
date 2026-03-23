@@ -225,22 +225,4 @@ func TestHealthScoreFloor(t *testing.T) {
 	}
 }
 
-func TestIntToStr(t *testing.T) {
-	tests := []struct {
-		input    int
-		expected string
-	}{
-		{0, "0"},
-		{1, "1"},
-		{42, "42"},
-		{-5, "-5"},
-		{100, "100"},
-	}
-
-	for _, tt := range tests {
-		result := intToStr(tt.input)
-		if result != tt.expected {
-			t.Errorf("intToStr(%d) = %q, want %q", tt.input, result, tt.expected)
-		}
-	}
-}
+// TestIntToStr removed — intToStr replaced with strconv.Itoa (stdlib).

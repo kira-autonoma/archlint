@@ -2,6 +2,7 @@ package mcp
 
 import (
 	"path/filepath"
+	"strconv"
 	"strings"
 
 	"github.com/mshogin/archlint/internal/analyzer"
@@ -328,7 +329,7 @@ func computeSRPViolations(m *FileMetrics, absPath string, a *analyzer.GoAnalyzer
 		if methodCount > srpMethodThreshold {
 			m.SRPViolations = append(m.SRPViolations, Violation{
 				Kind:    "srp-too-many-methods",
-				Message: strings.Join([]string{"Type ", t.Name, " has too many methods (", intToStr(methodCount), " > ", intToStr(srpMethodThreshold), ")"}, ""),
+				Message: strings.Join([]string{"Type ", t.Name, " has too many methods (", strconv.Itoa(methodCount), " > ", strconv.Itoa(srpMethodThreshold), ")"}, ""),
 				Target:  typeID,
 			})
 		}
@@ -336,7 +337,7 @@ func computeSRPViolations(m *FileMetrics, absPath string, a *analyzer.GoAnalyzer
 		if len(t.Fields) > srpFieldThreshold {
 			m.SRPViolations = append(m.SRPViolations, Violation{
 				Kind:    "srp-too-many-fields",
-				Message: strings.Join([]string{"Type ", t.Name, " has too many fields (", intToStr(len(t.Fields)), " > ", intToStr(srpFieldThreshold), ")"}, ""),
+				Message: strings.Join([]string{"Type ", t.Name, " has too many fields (", strconv.Itoa(len(t.Fields)), " > ", strconv.Itoa(srpFieldThreshold), ")"}, ""),
 				Target:  typeID,
 			})
 		}
@@ -400,7 +401,7 @@ func computeISPViolations(m *FileMetrics, absPath string, a *analyzer.GoAnalyzer
 		if methodCount > ispMethodThreshold {
 			m.ISPViolations = append(m.ISPViolations, Violation{
 				Kind:    "isp-fat-interface",
-				Message: strings.Join([]string{"Interface ", t.Name, " has too many methods (", intToStr(methodCount), " > ", intToStr(ispMethodThreshold), ")"}, ""),
+				Message: strings.Join([]string{"Interface ", t.Name, " has too many methods (", strconv.Itoa(methodCount), " > ", strconv.Itoa(ispMethodThreshold), ")"}, ""),
 				Target:  typeID,
 			})
 		}
@@ -613,6 +614,8 @@ func dfsMaxDepth(node string, adj map[string][]string, visited map[string]bool, 
 		}
 	}
 
+	delete(visited, node)
+
 	return maxD
 }
 
@@ -642,28 +645,3 @@ func computeHealthScore(m *FileMetrics) int {
 	return score
 }
 
-// intToStr converts an int to a string without importing strconv (avoiding circular deps).
-func intToStr(n int) string {
-	if n == 0 {
-		return "0"
-	}
-
-	neg := false
-	if n < 0 {
-		neg = true
-		n = -n
-	}
-
-	var digits []byte
-
-	for n > 0 {
-		digits = append([]byte{byte('0' + n%10)}, digits...)
-		n /= 10
-	}
-
-	if neg {
-		digits = append([]byte{'-'}, digits...)
-	}
-
-	return string(digits)
-}
