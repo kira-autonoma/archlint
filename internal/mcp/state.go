@@ -153,6 +153,12 @@ func (s *State) copyGraphLocked() *model.Graph {
 }
 
 // GetAnalyzer returns the current analyzer (read-only access).
+//
+// NOTE: The returned pointer may become stale if Reparse() replaces the
+// analyzer concurrently. In the current MCP server (single-threaded
+// JSON-RPC over stdio) this is safe, but callers in a concurrent context
+// should snapshot the pointer under the lock or use a deeper refactor to
+// ensure the analyzer is not replaced mid-use.
 func (s *State) GetAnalyzer() *analyzer.GoAnalyzer {
 	s.mu.RLock()
 	defer s.mu.RUnlock()

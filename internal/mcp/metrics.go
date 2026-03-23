@@ -539,11 +539,10 @@ func computeShotgunSurgery(m *FileMetrics, absPath string, a *analyzer.GoAnalyze
 			}
 
 			// Find file of the calling node.
-			for _, f := range a.AllFunctions() {
-				for fID := range a.AllFunctions() {
-					if fID == edge.From {
-						callerFiles[f.File] = true
-					}
+			for fID, f := range a.AllFunctions() {
+				if fID == edge.From {
+					callerFiles[f.File] = true
+					break
 				}
 			}
 
@@ -613,8 +612,6 @@ func dfsMaxDepth(node string, adj map[string][]string, visited map[string]bool, 
 			maxD = d
 		}
 	}
-
-	visited[node] = false
 
 	return maxD
 }
